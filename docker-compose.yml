@@ -1,0 +1,22 @@
+version: '3.8'
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+    volumes:
+      - .:/app
+    working_dir: /app
+
+  streamlit:
+    build: .
+    ports:
+      - "8501:8501"
+    environment:
+      - PORT=8501
+    volumes:
+      - .:/app
+    working_dir: /app
+    command: streamlit run app.py --server.port=8501 --server.address=0.0.0.0
