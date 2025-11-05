@@ -1,11 +1,8 @@
+# params.py
 import os
 
-LOCAL_DATA_PATH = os.path.join(os.path.expanduser('~'), "code", "ariannamng",
-                               "predicting_nail_diseases", 'raw_data')
+# Emotion labels for your facial expression model
+EMOTION_LABELS = ["angry", "disgust", "fear", "happy", "sad", "surprise", "neutral"]
 
-LOCAL_REGISTRY_PATH = "models"
-
-
-# Model
-MODEL_TARGET = "local"
-BUCKET_NAME = "predicting-nail-diseases"
+# Hugging Face model
+MODEL_NAME = "trpakov/vit-face-expression"

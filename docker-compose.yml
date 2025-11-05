@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   web:
-    build: .
+    image: facialexpressionrecognition-web  # Use existing image
     ports:
       - "8000:8000"
     environment:
@@ -9,9 +9,10 @@ services:
     volumes:
       - .:/app
     working_dir: /app
+    command: uvicorn API.api:app --host 0.0.0.0 --port 8000
 
   streamlit:
-    build: .
+    image: facialexpressionrecognition-web  # Use the SAME image for both
     ports:
       - "8501:8501"
     environment:
