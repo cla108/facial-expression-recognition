@@ -23,3 +23,4 @@ async def prediction(file: UploadFile):
     img = Image.open(file.file)
     emotion, confidence = predict_emotion(img)
     return {'emotion': emotion, 'confidence': float(confidence)}
+# docker-compose up --no-build

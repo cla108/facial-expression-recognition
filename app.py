@@ -98,7 +98,7 @@ if st.session_state.stage == 2:
     with open('temp_image.jpg', 'rb') as f:
         with st.spinner('Analyzing facial expression...'):
             # Use Docker service name instead of localhost
-            response = requests.post("http://web:8000/predict", files={'file': f}).json()
+            response = requests.post("http://facialexpressionrecognition-web-1:8000/predict", files={'file': f}).json()
 
     st.markdown("# FACIAL EXPRESSION ANALYSIS")
     st.markdown("#### Emotion Recognition Results")
@@ -147,7 +147,7 @@ if st.session_state.stage == 2:
         for i in range(0, 13):
             pred2.text("")
 
-        # Recommendation section
+        # Recommendation section - NOW INSIDE THE if emotion BLOCK
         st.markdown(f"#### Can we give you any recommendations related to {emotion}?")
 
         # Create two buttons side by side
@@ -156,8 +156,8 @@ if st.session_state.stage == 2:
         with col1:
             if st.button("🎵 Recommend Music"):
                 try:
-                    response = requests.get("http://web:8000/answer_question",
-                                          params={'prediction': emotion, 'question': "Recommend some music that matches this emotion"})
+                    response = requests.get("http://localhost:8000/answer_question",
+                      params={'prediction': emotion, 'question': "Recommend some music that match this emotion"})
                     st.markdown("#### Music Recommendations:")
                     st.success(response.json()['answer'])
                 except Exception as e:
@@ -166,13 +166,17 @@ if st.session_state.stage == 2:
         with col2:
             if st.button("🎬 Recommend Movies"):
                 try:
-                    response = requests.get("http://web:8000/answer_question",
-                                          params={'prediction': emotion, 'question': "Recommend some movies that match this emotion"})
+                    response = requests.get("http://localhost:8000/answer_question",
+                      params={'prediction': emotion, 'question': "Recommend some movies that match this emotion"})
                     st.markdown("#### Movie Recommendations:")
                     st.success(response.json()['answer'])
                 except Exception as e:
                     st.error(f"Error getting movie recommendations: {e}")
 
+    else:
+        st.write("The model couldn't detect an emotion from this image.")
+        st.warning("You cannot ask a question until an emotion is detected.")
+        st.stop()
 
 # Add space before the bottom text
 st.markdown("<br><br><br>", unsafe_allow_html=True)
