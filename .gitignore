@@ -1,32 +1,78 @@
-.env
-raw_data/
-*.JPG
-!imagemsite.png
-*.ipynb
-.python-version
-resnet_based_class.ipynb
-Untitled.ipynb
-.ipynb_checkpoints
-Untitled-checkpoint.ipynb
+# Python
 __pycache__/
-.env.yaml
-train_flow-deployment.yaml
-# System files
-.DS_Store
-.ipynb_checkpoints
-*.pyc
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+svelte/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
 *.swp
-.coverage
-*.iml
-*.egg-info
-*.vscode
-# Data files
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+.dockerignore
+
+# Streamlit
+.streamlit/
+
+# Temporary files
+temp_image.jpg
+image.jpg
+*.jpg
+*.png
+
+# Environment variables
+.env
+.env.yaml
+.envrc
+
+# Jupyter notebooks
+*.ipynb
+*.ipynb_checkpoints/
+
+# Data files (keep this to avoid pushing large datasets)
+raw_data/
 *.csv
 *.sqlite
 *.zip
-*.sublime-workspace
-**/*.code-workspace
-data for model Nail/
+models/               # Remove if you have large model files
+
+# System files
+.python-version
+.coverage
+*.iml
+*.vscode
+
 # Other
 pytestdebug.log
-models
+**/*.code-workspace
+*.sublime-workspace
+.envrc
+.env
+*.env
+secrets.*

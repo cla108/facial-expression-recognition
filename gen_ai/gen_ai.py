@@ -1,24 +1,35 @@
+# gen_ai/gen_ai.py
+import os
+import sys
+from openai import OpenAI
+
+# Add path to import MusicRecommender
+sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+from facial_expression.music_recommender import MusicRecommender
+
+# Initialize clients
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+music_recommender = MusicRecommender('spotify_emotions_curated.csv')
+
 def question_pipeline_func(prediction, question):
-    """Temporary function until OpenAI API is set up"""
+    """Handle both music recommendations and general questions"""
 
-    # Simple responses based on emotion
-    emotion_responses = {
-        "happy": "Great! Happiness is wonderful. For music, try upbeat pop or joyful classical. For movies, comedies or feel-good films work well!",
-        "sad": "I'm sorry you're feeling sad. For music, try comforting ballads or uplifting songs. For movies, heartfelt dramas or inspiring stories might help.",
-        "angry": "It's okay to feel angry. For music, try intense rock or calming instrumental. For movies, action films or comedies can help release tension.",
-        "fear": "Fear is a natural emotion. For music, try soothing ambient or calming classical. For movies, light comedies or inspiring stories might help.",
-        "surprise": "Surprise can be exciting! For music, try unexpected jazz or energetic electronic. For movies, thrillers or adventure films could be fun!",
-        "disgust": "Disgust is a protective emotion. For music, try powerful metal or cleansing world music. For movies, documentaries or transformative stories might help.",
-        "neutral": "A neutral mood is balanced. For music, try lo-fi or smooth jazz. For movies, thoughtful dramas or documentaries could be interesting."
-    }
+    # Music-related questions
+    music_keywords = ['music', 'song', 'playlist', 'recommend', 'track', 'artist']
+    if any(keyword in question.lower() for keyword in music_keywords):
+        return music_recommender.get_formatted_recommendations(prediction, n=10)
 
-    # Return a simple response based on the emotion
-    base_response = emotion_responses.get(prediction, f"For {prediction} emotion, try music and movies that match this mood!")
-
-    # Add the question context
-    if "music" in question.lower():
-        return f"🎵 Music recommendation for {prediction}: {base_response.split('.')[0]}."
-    elif "movie" in question.lower():
-        return f"🎬 Movie recommendation for {prediction}: {base_response.split('.')[1] if '.' in base_response else base_response}."
-    else:
-        return f"Emotion detected: {prediction}. {base_response}"
+    # Other questions - use OpenAI
+    try:
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": f"You are an emotion expert. The user's facial expression shows {prediction} emotion."},
+                {"role": "user", "content": question}
+            ],
+            max_tokens=150,
+            temperature=0.7
+        )
+        return response.choices[0].message.content
+    except Exception as e:
+        return f"I'm sorry, I couldn't process your question. Error: {str(e)}"

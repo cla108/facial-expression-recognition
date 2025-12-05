@@ -8,6 +8,7 @@ import requests
 from PIL import Image
 from facial_expression.prediction.predict import predict_emotion
 from streamlit_cropper import st_cropper
+from facial_expression.music_recommender import MusicRecommender
 
 
 def set_state(i):
@@ -147,31 +148,41 @@ if st.session_state.stage == 2:
         for i in range(0, 13):
             pred2.text("")
 
-        # Recommendation section - NOW INSIDE THE if emotion BLOCK
+        # Recommendation section - INSIDE THE if emotion BLOCK
         st.markdown(f"#### Can we give you any recommendations related to {emotion}?")
 
-        # Create two buttons side by side
         col1, col2 = st.columns(2)
 
         with col1:
             if st.button("🎵 Recommend Music"):
                 try:
-                    response = requests.get("http://localhost:8000/answer_question",
-                      params={'prediction': emotion, 'question': "Recommend some music that match this emotion"})
+                    # Get music recommendations directly from dataset
+                    recommender = MusicRecommender('spotify_emotions_curated.csv')
+                    recommendations = recommender.get_formatted_recommendations(emotion, n=10)
+
                     st.markdown("#### Music Recommendations:")
-                    st.success(response.json()['answer'])
+                    st.markdown(recommendations)
+
+
+
                 except Exception as e:
                     st.error(f"Error getting music recommendations: {e}")
 
-        with col2:
-            if st.button("🎬 Recommend Movies"):
-                try:
-                    response = requests.get("http://localhost:8000/answer_question",
-                      params={'prediction': emotion, 'question': "Recommend some movies that match this emotion"})
-                    st.markdown("#### Movie Recommendations:")
-                    st.success(response.json()['answer'])
-                except Exception as e:
-                    st.error(f"Error getting movie recommendations: {e}")
+
+                            # Simple question box
+        st.markdown("---")
+        st.markdown("### 💬 Ask EmotionAI")
+
+        question = st.text_input("Ask about your emotion or request recommendations:")
+
+        if st.button("Ask"):
+            if question:
+                with st.spinner("Getting response..."):
+                    response = question_pipeline_func(emotion, question)
+                st.markdown("#### Response:")
+                st.markdown(response)
+            else:
+                st.warning("Please enter a question first!")
 
     else:
         st.write("The model couldn't detect an emotion from this image.")
@@ -180,4 +191,4 @@ if st.session_state.stage == 2:
 
 # Add space before the bottom text
 st.markdown("<br><br><br>", unsafe_allow_html=True)
-st.markdown("This application is designed for educational purposes only, not as psychological advice. The AI detects emotions from images, while the AI assistant answers questions about emotional understanding. 😊", unsafe_allow_html=True)
+st.markdown("This application is designed for educational purposes only, not as psychological advice. The AI detects emotions from images, while the AI assistant suggest songs. 😊", unsafe_allow_html=True)

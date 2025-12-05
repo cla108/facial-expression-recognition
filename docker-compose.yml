@@ -1,22 +1,24 @@
 version: '3.8'
 services:
   web:
-    image: facialexpressionrecognition-web  # Use existing image
+    build: .
     ports:
       - "8000:8000"
     environment:
       - PORT=8000
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
       - .:/app
     working_dir: /app
     command: uvicorn API.api:app --host 0.0.0.0 --port 8000
 
   streamlit:
-    image: facialexpressionrecognition-web  # Use the SAME image for both
+    build: .
     ports:
       - "8501:8501"
     environment:
       - PORT=8501
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     volumes:
       - .:/app
     working_dir: /app

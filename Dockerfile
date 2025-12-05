@@ -11,7 +11,6 @@ COPY API /API
 COPY gen_ai /gen_ai
 
 # Copy individual files
-COPY setup.py /setup.py
 COPY app.py /app.py
 COPY README.md /README.md
 
